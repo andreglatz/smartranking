@@ -20,8 +20,8 @@ export class PlayersController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  async savePlayer(@Body() savePlayerDto: SavePlayerDto) {
-    await this.playersService.create(savePlayerDto);
+  async createPlayer(@Body() savePlayerDto: SavePlayerDto): Promise<Player> {
+    return await this.playersService.create(savePlayerDto);
   }
 
   @Put('/:id')
