@@ -9,11 +9,21 @@ export class PlayersService {
   #players: Player[] = [];
 
   async savePlayer(savePlayerDto: SavePlayerDto): Promise<void> {
-    this.save(savePlayerDto);
+    const { email } = savePlayerDto;
+
+    const playerFound = this.#players.find((player) => player.email == email);
+
+    if (playerFound) this.update(playerFound, savePlayerDto);
+    else this.save(savePlayerDto);
   }
 
   async loadAll(): Promise<Player[]> {
-    return await this.#players;
+    return this.#players;
+  }
+
+  private update(playerFound: Player, savePlayerDto: SavePlayerDto): void {
+    const { name } = savePlayerDto;
+    playerFound.name = name;
   }
 
   private save(savePlayerDto: SavePlayerDto): void {
