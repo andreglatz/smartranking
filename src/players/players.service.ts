@@ -30,6 +30,17 @@ export class PlayersService {
     return playerFound;
   }
 
+  async delete(email: string): Promise<void> {
+    const playerFound = this.#players.find((player) => player.email === email);
+
+    if (!playerFound)
+      throw new NotFoundException(`Player with email ${email} not found`);
+
+    this.#players = this.#players.filter(
+      (player) => player.email !== playerFound.email,
+    );
+  }
+
   private update(playerFound: Player, savePlayerDto: SavePlayerDto): void {
     const { name } = savePlayerDto;
     playerFound.name = name;
