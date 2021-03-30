@@ -12,6 +12,10 @@ export class PlayersService {
     this.save(savePlayerDto);
   }
 
+  async loadAll(): Promise<Player[]> {
+    return await this.#players;
+  }
+
   private save(savePlayerDto: SavePlayerDto): void {
     const { name, email, phoneNumber } = savePlayerDto;
 
