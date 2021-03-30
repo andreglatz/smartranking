@@ -10,15 +10,6 @@ export class PlayersService {
     @InjectModel('player') private readonly playerModule: Model<Player>,
   ) {}
 
-  async savePlayer(savePlayerDto: SavePlayerDto): Promise<void> {
-    const { email } = savePlayerDto;
-
-    const playerFound = await this.playerModule.findOne({ email }).exec();
-
-    if (playerFound) this.update(playerFound, savePlayerDto);
-    else this.save(savePlayerDto);
-  }
-
   async loadAll(): Promise<Player[]> {
     return await this.playerModule.find().exec();
   }
@@ -36,16 +27,13 @@ export class PlayersService {
     return await this.playerModule.deleteOne({ email }).exec();
   }
 
-  private async update(
-    player: Player,
-    savePlayerDto: SavePlayerDto,
-  ): Promise<Player> {
+  async update(id: string, savePlayerDto: SavePlayerDto): Promise<Player> {
     return await this.playerModule
-      .findOneAndUpdate({ email: player.email }, { $set: savePlayerDto })
+      .findByIdAndUpdate(id, { $set: savePlayerDto })
       .exec();
   }
 
-  private async save(savePlayerDto: SavePlayerDto): Promise<Player> {
+  async create(savePlayerDto: SavePlayerDto): Promise<Player> {
     const player = new this.playerModule(savePlayerDto);
     return await player.save();
   }

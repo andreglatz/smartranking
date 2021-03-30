@@ -9,6 +9,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   UsePipes,
   ValidationPipe,
@@ -22,7 +23,16 @@ export class PlayersController {
   @Post()
   @UsePipes(ValidationPipe)
   async savePlayer(@Body() savePlayerDto: SavePlayerDto) {
-    await this.playersService.savePlayer(savePlayerDto);
+    await this.playersService.create(savePlayerDto);
+  }
+
+  @Put('/:id')
+  @UsePipes(ValidationPipe)
+  async updatePlayer(
+    @Param('id', PlayersParamsValidationPipe) id: string,
+    @Body() savePlayerDto: SavePlayerDto,
+  ) {
+    await this.playersService.update(id, savePlayerDto);
   }
 
   @Get()
