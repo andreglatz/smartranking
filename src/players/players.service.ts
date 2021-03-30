@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { SavePlayerDto } from './dtos/save-player.dto';
 import { Player } from './interfaces/player.interface';
 import { InjectModel } from '@nestjs/mongoose';
@@ -34,6 +38,14 @@ export class PlayersService {
   }
 
   async create(savePlayerDto: SavePlayerDto): Promise<Player> {
+    const { email } = savePlayerDto;
+    const foundPlayer = await this.playerModule.findOne({ email }).exec();
+
+    if (foundPlayer)
+      throw new BadRequestException(
+        `Player with email ${email} already registered`,
+      );
+
     const player = new this.playerModule(savePlayerDto);
     return await player.save();
   }

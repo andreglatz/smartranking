@@ -10,11 +10,9 @@ import {
   Param,
   Post,
   Put,
-  Query,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { PlayersParamsValidationPipe } from './pipes/players-params-validation.pipe';
 
 @Controller('api/v1/players')
 export class PlayersController {
