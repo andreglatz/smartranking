@@ -1,6 +1,6 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { SavePlayerDto } from './dtos/save-player.dto';
-import { Player } from './interfaces/players.interface';
+import { Player } from './interfaces/player.interface';
 import { v4 } from 'uuid';
 
 @Injectable()
