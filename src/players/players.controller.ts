@@ -1,4 +1,4 @@
-import { SavePlayerDto } from './dtos/save-player.dto';
+import { CreatePlayerDto } from './dtos/create-player.dto';
 import { Player } from './interfaces/player.interface';
 import { PlayersService } from './players.service';
 
@@ -13,6 +13,7 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+import { UpdatePlayerDto } from './dtos/update-player.dto';
 
 @Controller('api/v1/players')
 export class PlayersController {
@@ -20,17 +21,19 @@ export class PlayersController {
 
   @Post()
   @UsePipes(ValidationPipe)
-  async createPlayer(@Body() savePlayerDto: SavePlayerDto): Promise<Player> {
-    return await this.playersService.create(savePlayerDto);
+  async createPlayer(
+    @Body() createPlayerDto: CreatePlayerDto,
+  ): Promise<Player> {
+    return await this.playersService.create(createPlayerDto);
   }
 
   @Put('/:id')
   @UsePipes(ValidationPipe)
   async updatePlayer(
     @Param('id') id: string,
-    @Body() savePlayerDto: SavePlayerDto,
+    @Body() updatePlayerDto: UpdatePlayerDto,
   ) {
-    await this.playersService.update(id, savePlayerDto);
+    await this.playersService.update(id, updatePlayerDto);
   }
 
   @Get()

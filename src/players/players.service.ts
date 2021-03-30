@@ -3,10 +3,11 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { SavePlayerDto } from './dtos/save-player.dto';
+import { CreatePlayerDto } from './dtos/create-player.dto';
 import { Player } from './interfaces/player.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { UpdatePlayerDto } from './dtos/update-player.dto';
 
 @Injectable()
 export class PlayersService {
@@ -31,19 +32,21 @@ export class PlayersService {
     return await this.playerModule.findByIdAndDelete(id).exec();
   }
 
-  async update(id: string, savePlayerDto: SavePlayerDto): Promise<Player> {
+  async update(id: string, updatePlayerDto: UpdatePlayerDto): Promise<Player> {
     const playerFound = await this.playerModule.findById(id).exec();
 
     if (!playerFound)
       throw new NotFoundException(`Player with id ${id} not found`);
 
+    const { name, phoneNumber } = updatePlayerDto;
+
     return await this.playerModule
-      .findByIdAndUpdate(id, { $set: savePlayerDto })
+      .findByIdAndUpdate(id, { $set: { name, phoneNumber } })
       .exec();
   }
 
-  async create(savePlayerDto: SavePlayerDto): Promise<Player> {
-    const { email } = savePlayerDto;
+  async create(createPlayerDto: CreatePlayerDto): Promise<Player> {
+    const { email } = createPlayerDto;
     const foundPlayer = await this.playerModule.findOne({ email }).exec();
 
     if (foundPlayer)
@@ -51,7 +54,7 @@ export class PlayersService {
         `Player with email ${email} already registered`,
       );
 
-    const player = new this.playerModule(savePlayerDto);
+    const player = new this.playerModule(createPlayerDto);
     return await player.save();
   }
 }
