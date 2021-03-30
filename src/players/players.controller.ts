@@ -7,6 +7,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Query,
   UsePipes,
@@ -25,9 +26,13 @@ export class PlayersController {
   }
 
   @Get()
-  async loadPlayers(@Query('email') email: string): Promise<Player[] | Player> {
-    if (email) return await this.playersService.findByEmail(email);
-    else return await this.playersService.loadAll();
+  async loadPlayers(): Promise<Player[]> {
+    return await this.playersService.loadAll();
+  }
+
+  @Get('/:id')
+  async loadPlayerById(@Param('id') id: string): Promise<Player> {
+    return await this.playersService.loadById(id);
   }
 
   @Delete()

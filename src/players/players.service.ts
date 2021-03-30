@@ -23,11 +23,11 @@ export class PlayersService {
     return await this.playerModule.find().exec();
   }
 
-  async findByEmail(email: string): Promise<Player> {
-    const playerFound = await this.playerModule.findOne({ email }).exec();
+  async loadById(id: string): Promise<Player> {
+    const playerFound = await this.playerModule.findById(id).exec();
 
     if (!playerFound)
-      throw new NotFoundException(`Player with email ${email} not found`);
+      throw new NotFoundException(`Player with id ${id} not found`);
 
     return playerFound;
   }
