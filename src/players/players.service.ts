@@ -32,6 +32,11 @@ export class PlayersService {
   }
 
   async update(id: string, savePlayerDto: SavePlayerDto): Promise<Player> {
+    const playerFound = await this.playerModule.findById(id).exec();
+
+    if (!playerFound)
+      throw new NotFoundException(`Player with id ${id} not found`);
+
     return await this.playerModule
       .findByIdAndUpdate(id, { $set: savePlayerDto })
       .exec();
