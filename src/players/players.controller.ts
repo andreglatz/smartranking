@@ -29,7 +29,7 @@ export class PlayersController {
   @Put('/:id')
   @UsePipes(ValidationPipe)
   async updatePlayer(
-    @Param('id', PlayersParamsValidationPipe) id: string,
+    @Param('id') id: string,
     @Body() savePlayerDto: SavePlayerDto,
   ) {
     await this.playersService.update(id, savePlayerDto);
@@ -45,10 +45,8 @@ export class PlayersController {
     return await this.playersService.loadById(id);
   }
 
-  @Delete()
-  async deletePlayer(
-    @Query('email', PlayersParamsValidationPipe) email: string,
-  ): Promise<void> {
-    await this.playersService.delete(email);
+  @Delete('/:id')
+  async deletePlayer(@Param('id') id: string): Promise<void> {
+    await this.playersService.delete(id);
   }
 }

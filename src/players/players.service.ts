@@ -23,8 +23,8 @@ export class PlayersService {
     return playerFound;
   }
 
-  async delete(email: string): Promise<any> {
-    return await this.playerModule.deleteOne({ email }).exec();
+  async delete(id: string): Promise<any> {
+    return await this.playerModule.findByIdAndDelete(id).exec();
   }
 
   async update(id: string, savePlayerDto: SavePlayerDto): Promise<Player> {
