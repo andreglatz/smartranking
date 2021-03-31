@@ -37,10 +37,19 @@ export class RankingsController {
   }
 
   @Put('/:ranking')
+  @UsePipes(ValidationPipe)
   async updateRanking(
     @Param('ranking') ranking: string,
     @Body() updateRankingDto: UpdateRankingDto,
   ): Promise<void> {
     await this.rankingsService.update(ranking, updateRankingDto);
+  }
+
+  @Post('/:ranking/players/:player')
+  async linkRankingPlayer(
+    @Param('ranking') ranking: string,
+    @Param('player') player: string,
+  ): Promise<void> {
+    await this.rankingsService.link(ranking, player);
   }
 }
