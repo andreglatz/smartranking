@@ -4,6 +4,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   UsePipes,
   ValidationPipe,
@@ -26,5 +27,10 @@ export class RankingsController {
   @Get()
   async loadRankings(): Promise<Ranking[]> {
     return await this.rankingsService.loadAll();
+  }
+
+  @Get('/:ranking')
+  async loadByRanking(@Param('ranking') ranking: string): Promise<Ranking> {
+    return await this.rankingsService.loadByRanking(ranking);
   }
 }

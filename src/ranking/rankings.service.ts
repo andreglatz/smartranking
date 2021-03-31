@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateRankingDto } from './dtos/create-ranking.dto';
@@ -25,5 +29,14 @@ export class RankingsService {
 
   async loadAll(): Promise<Ranking[]> {
     return await this.RankingModel.find().exec();
+  }
+
+  async loadByRanking(ranking: string): Promise<Ranking> {
+    const rankingFound = await this.RankingModel.findOne({ ranking }).exec();
+
+    if (!rankingFound)
+      throw new NotFoundException(`Ranking ${ranking} not found`);
+
+    return rankingFound;
   }
 }
