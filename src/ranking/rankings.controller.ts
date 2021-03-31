@@ -22,4 +22,9 @@ export class RankingsController {
   ): Promise<Ranking> {
     return await this.rankingsService.create(createRankingDto);
   }
+
+  @Get()
+  async loadRankings(): Promise<Ranking[]> {
+    return await this.rankingsService.loadAll();
+  }
 }

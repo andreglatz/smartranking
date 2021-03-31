@@ -22,4 +22,8 @@ export class RankingsService {
 
     return await createdRanking.save();
   }
+
+  async loadAll(): Promise<Ranking[]> {
+    return await this.RankingModel.find().exec();
+  }
 }
