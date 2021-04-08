@@ -1,15 +1,18 @@
 import {
   Body,
   Controller,
+  Get,
   Logger,
   Post,
   UsePipes,
   ValidationPipe,
+  Query,
 } from '@nestjs/common';
+import { PlayersService } from 'src/players/players.service';
+
 import { ChallengeService } from './challenge.service';
 import { CreateChallengeDto } from './dtos/create-challenge.dto';
 import { Challenge } from './interfaces/challenge.interface';
-import { ChallengeSchmea } from './interfaces/challenge.schema';
 
 @Controller('api/v1/challenges')
 export class ChallengeController {
@@ -24,5 +27,12 @@ export class ChallengeController {
   ): Promise<Challenge> {
     this.logger.log(`create challenge: ${JSON.stringify(createChallengeDto)}`);
     return this.challengeService.create(createChallengeDto);
+  }
+
+  @Get()
+  async loadChallenges(@Query('player') player: string): Promise<Challenge[]> {
+    return player
+      ? await this.challengeService.findByPlayer(player)
+      : await this.challengeService.findAll();
   }
 }

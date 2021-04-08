@@ -59,4 +59,24 @@ export class ChallengeService {
     this.logger.log(`challenge created: ${JSON.stringify(createdChallenge)}`);
     return await createdChallenge.save();
   }
+
+  async findByPlayer(player: string): Promise<Challenge[]> {
+    await this.playersService.loadById(player);
+
+    return await this.ChallengeModel.find()
+      .where('players')
+      .in([player])
+      .populate('requester')
+      .populate('players')
+      .populate('match')
+      .exec();
+  }
+
+  async findAll(): Promise<Challenge[]> {
+    return await this.ChallengeModel.find()
+      .populate('requester')
+      .populate('players')
+      .populate('match')
+      .exec();
+  }
 }
