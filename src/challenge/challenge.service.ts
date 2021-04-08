@@ -4,6 +4,7 @@ import { Model } from 'mongoose';
 import { PlayersService } from 'src/players/players.service';
 import { RankingsService } from 'src/ranking/rankings.service';
 import { CreateChallengeDto } from './dtos/create-challenge.dto';
+import { UpdateChallengeDTO } from './dtos/update-challenge.dto';
 import { ChallengeStatus } from './interfaces/challenge-status.enum';
 import { Challenge } from './interfaces/challenge.interface';
 
@@ -78,5 +79,22 @@ export class ChallengeService {
       .populate('players')
       .populate('match')
       .exec();
+  }
+
+  async update(
+    challengeId: string,
+    updateChallengeDTO: UpdateChallengeDTO,
+  ): Promise<void> {
+    const challenge = await this.ChallengeModel.findById(challengeId);
+
+    if (!challenge)
+      throw new BadRequestException(`${challengeId} is not a challenge`);
+
+    if (updateChallengeDTO.status) challenge.timestampResponse = new Date();
+
+    challenge.status = updateChallengeDTO.status;
+    challenge.dateTime = updateChallengeDTO.dateTime;
+
+    await this.ChallengeModel.findByIdAndUpdate(challengeId, { ...challenge });
   }
 }

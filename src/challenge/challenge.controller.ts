@@ -7,12 +7,17 @@ import {
   UsePipes,
   ValidationPipe,
   Query,
+  Patch,
+  Put,
+  Param,
 } from '@nestjs/common';
 import { PlayersService } from 'src/players/players.service';
 
 import { ChallengeService } from './challenge.service';
 import { CreateChallengeDto } from './dtos/create-challenge.dto';
+import { UpdateChallengeDTO } from './dtos/update-challenge.dto';
 import { Challenge } from './interfaces/challenge.interface';
+import { ChallengeStatusValidation } from './pipes/challenge-status-vallidation.pipe';
 
 @Controller('api/v1/challenges')
 export class ChallengeController {
@@ -34,5 +39,13 @@ export class ChallengeController {
     return player
       ? await this.challengeService.findByPlayer(player)
       : await this.challengeService.findAll();
+  }
+
+  @Put(':challenge')
+  async setChallengeStatus(
+    @Param('challenge') challenge: string,
+    @Body(ChallengeStatusValidation) updateChallengeDTO: UpdateChallengeDTO,
+  ) {
+    return this.challengeService.update(challenge, updateChallengeDTO);
   }
 }
