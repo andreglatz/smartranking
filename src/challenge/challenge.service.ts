@@ -1,18 +1,26 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { PlayersService } from 'src/players/players.service';
 import { RankingsService } from 'src/ranking/rankings.service';
 import { CreateChallengeDto } from './dtos/create-challenge.dto';
+import { SetMatchToChallengeDTO } from './dtos/set-match-to-challenge.dto';
 import { UpdateChallengeDTO } from './dtos/update-challenge.dto';
 import { ChallengeStatus } from './interfaces/challenge-status.enum';
-import { Challenge } from './interfaces/challenge.interface';
+import { Challenge, Match } from './interfaces/challenge.interface';
 
 @Injectable()
 export class ChallengeService {
   constructor(
     @InjectModel('challenges')
     private readonly ChallengeModel: Model<Challenge>,
+    @InjectModel('matches')
+    private readonly MatchModel: Model<Match>,
     private readonly playersService: PlayersService,
     private readonly rankingsService: RankingsService,
   ) {}
@@ -96,5 +104,44 @@ export class ChallengeService {
     challenge.dateTime = updateChallengeDTO.dateTime;
 
     await this.ChallengeModel.findByIdAndUpdate(challengeId, { ...challenge });
+  }
+
+  async setMatch(
+    challengeId: string,
+    setMatchToChallengeDTO: SetMatchToChallengeDTO,
+  ) {
+    const challenge = await this.ChallengeModel.findById(challengeId);
+
+    if (!challenge)
+      throw new BadRequestException(`${challengeId} is not a challenge`);
+
+    const winnerBelongsChallenge = challenge.players.find(
+      (player) => player == setMatchToChallengeDTO.winner.id,
+    );
+
+    if (!winnerBelongsChallenge)
+      throw new BadRequestException('The winner not belongs a challenge');
+
+    const match = new this.MatchModel({
+      ...setMatchToChallengeDTO,
+      winner: setMatchToChallengeDTO.winner.id,
+    });
+
+    match.ranking = challenge.ranking;
+    match.players = challenge.players;
+
+    const result = await match.save();
+
+    challenge.status = ChallengeStatus.COMPLETED;
+    challenge.match = result._id;
+
+    try {
+      await this.ChallengeModel.findByIdAndUpdate(challengeId, {
+        ...challenge,
+      }).exec();
+    } catch (error) {
+      await this.ChallengeModel.findByIdAndDelete(challengeId).exec();
+      throw new InternalServerErrorException();
+    }
   }
 }

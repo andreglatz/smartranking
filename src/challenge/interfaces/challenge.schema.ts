@@ -9,7 +9,7 @@ export const ChallengeSchmea = new Schema(
     requester: { type: Schema.Types.ObjectId, ref: 'players' },
     ranking: { type: String },
     players: [{ type: Schema.Types.ObjectId, ref: 'players' }],
-    match: { type: Schema.Types.ObjectId, ref: 'match' },
+    match: { type: Schema.Types.ObjectId, ref: 'matches' },
   },
   { timestamps: true, collection: 'challengers' },
 );

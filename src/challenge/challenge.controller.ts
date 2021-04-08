@@ -15,6 +15,7 @@ import { PlayersService } from 'src/players/players.service';
 
 import { ChallengeService } from './challenge.service';
 import { CreateChallengeDto } from './dtos/create-challenge.dto';
+import { SetMatchToChallengeDTO } from './dtos/set-match-to-challenge.dto';
 import { UpdateChallengeDTO } from './dtos/update-challenge.dto';
 import { Challenge } from './interfaces/challenge.interface';
 import { ChallengeStatusValidation } from './pipes/challenge-status-vallidation.pipe';
@@ -47,5 +48,16 @@ export class ChallengeController {
     @Body(ChallengeStatusValidation) updateChallengeDTO: UpdateChallengeDTO,
   ) {
     return this.challengeService.update(challenge, updateChallengeDTO);
+  }
+
+  @Post(':challenge/match')
+  async setMatchToChallenge(
+    @Param('challenge') challenge: string,
+    @Body(ValidationPipe) setMatchToChallengeDTO: SetMatchToChallengeDTO,
+  ) {
+    return await this.challengeService.setMatch(
+      challenge,
+      setMatchToChallengeDTO,
+    );
   }
 }
