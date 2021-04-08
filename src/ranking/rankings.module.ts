@@ -12,5 +12,6 @@ import { RankingsService } from './rankings.service';
   ],
   controllers: [RankingsController],
   providers: [RankingsService],
+  exports: [RankingsService],
 })
 export class RankingsModule {}

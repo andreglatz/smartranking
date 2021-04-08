@@ -8,7 +8,7 @@ import {
   IsNotEmpty,
 } from 'class-validator';
 
-export class AddChallengeDto {
+export class CreateChallengeDto {
   @IsNotEmpty()
   @IsDateString()
   dateTime: Date;
